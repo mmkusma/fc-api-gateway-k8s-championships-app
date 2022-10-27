@@ -3,14 +3,14 @@ kind: Deployment
 metadata:
   name: {{ include "championships.fullname" . }}
   labels:
-    {{- include "championships.labels" . | nindent 4 }}
+    app: {{ include "championships.name" . }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "championships.selectorLabels" . | nindent 6 }}
+      app: {{ include "championships.name" . }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "championships.selectorLabels" . | nindent 8 }}
+        app: {{ include "championships.name" . }}
+        version: v1
+        stack: echo
+        interface: rest
+        language: golang
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
